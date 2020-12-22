@@ -142,47 +142,68 @@
 		},
 		"/submit": {
 			"get": {
-				"tags": ["Submission"],
+				"tags": [
+					"Submission"
+				],
 				"summary": "Endpoint to accept submissions",
 				"operationId": "getSubmit",
-				"parameters": [{
-					"name": "collection",
-					"in": "query",
-					"description": "Collection identifier. Optional, in which case the default collection for the run will be considered.",
-					"schema": {
-						"type": "string"
+				"parameters": [
+					{
+						"name": "collection",
+						"in": "query",
+						"description": "Collection identifier. Optional, in which case the default collection for the run will be considered.",
+						"allowEmptyValue": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "item",
+						"in": "query",
+						"description": "Identifier for the actual media object or media file.",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "frame",
+						"in": "query",
+						"description": "Frame number for media with temporal progression (e.g. video).",
+						"allowEmptyValue": true,
+						"schema": {
+							"type": "integer",
+							"format": "int32"
+						}
+					},
+					{
+						"name": "shot",
+						"in": "query",
+						"description": "Shot number for media with temporal progression (e.g. video).",
+						"allowEmptyValue": true,
+						"schema": {
+							"type": "integer",
+							"format": "int32"
+						}
+					},
+					{
+						"name": "timecode",
+						"in": "query",
+						"description": "Timecode for media with temporal progression (e.g. video).",
+						"allowEmptyValue": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "session",
+						"in": "query",
+						"description": "Session Token",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
 					}
-				}, {
-					"name": "item",
-					"in": "query",
-					"description": "Identifier for the actual media object or media file.",
-					"schema": {
-						"type": "string"
-					}
-				}, {
-					"name": "frame",
-					"in": "query",
-					"description": "Frame number for media with temporal progression (e.g. video).",
-					"schema": {
-						"type": "integer",
-						"format": "int32"
-					}
-				}, {
-					"name": "shot",
-					"in": "query",
-					"description": "Shot number for media with temporal progression (e.g. video).",
-					"schema": {
-						"type": "integer",
-						"format": "int32"
-					}
-				}, {
-					"name": "timecode",
-					"in": "query",
-					"description": "Timecode for media with temporal progression (e.g. video).",
-					"schema": {
-						"type": "string"
-					}
-				}],
+				],
 				"responses": {
 					"200": {
 						"description": "OK",
