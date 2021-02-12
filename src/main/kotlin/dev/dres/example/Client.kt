@@ -1,9 +1,13 @@
 package dev.dres.example
 
+import dev.dres.client.LogApi
 import dev.dres.client.SubmissionApi
 import dev.dres.client.UserApi
 import org.openapitools.client.infrastructure.ClientException
 import org.openapitools.client.models.LoginRequest
+import org.openapitools.client.models.QueryResult
+import org.openapitools.client.models.QueryResultLog
+import org.openapitools.client.models.SessionId
 import java.net.ConnectException
 
 object Client {
@@ -14,8 +18,11 @@ object Client {
         //initialize user api client
         val userApi = UserApi(Settings.basePath)
 
-        //initialize user api client
+        //initialize submission api client
         val submissionApi = SubmissionApi(Settings.basePath)
+
+        //initialize logging api client
+        val logApi = LogApi(Settings.basePath)
 
         println("Trying to log in to '${Settings.basePath}' with user '${Settings.user}'")
 
@@ -67,6 +74,22 @@ object Client {
 
         if (submissionResponse != null && submissionResponse.status) {
             println("The submission was successfully sent to the server.")
+
+            logApi.postLogResult(session = sessionId,
+                    QueryResultLog(System.currentTimeMillis(),
+                        sortType = "list",
+                        results = listOf(
+                            QueryResult("some_item_name", segment = 3, score = 0.9, rank = 1),
+                            QueryResult("some_item_name", segment = 5, score = 0.85, rank = 2),
+                            QueryResult("some_oher_item_name", segment = 12, score = 0.76, rank = 3)
+                        ),
+                        events = listOf(),
+                        resultSetAvailability = "",
+                        serverTimeStamp = 0, //FIXME
+                        serverTimeStampDollarDres = 0 //FIXME
+                        )
+                )
+
         }
 
         Thread.sleep(1000) //doing other things...
