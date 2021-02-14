@@ -81,12 +81,10 @@ object Client {
                         results = listOf(
                             QueryResult("some_item_name", segment = 3, score = 0.9, rank = 1),
                             QueryResult("some_item_name", segment = 5, score = 0.85, rank = 2),
-                            QueryResult("some_oher_item_name", segment = 12, score = 0.76, rank = 3)
+                            QueryResult("some_other_item_name", segment = 12, score = 0.76, rank = 3)
                         ),
                         events = listOf(),
-                        resultSetAvailability = "",
-                        serverTimeStamp = 0, //FIXME
-                        serverTimeStampDollarDres = 0 //FIXME
+                        resultSetAvailability = ""
                         )
                 )
 
