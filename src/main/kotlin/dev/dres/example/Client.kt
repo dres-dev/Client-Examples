@@ -1,5 +1,6 @@
 package dev.dres.example
 
+import dev.dres.client.ClientRunInfoApi
 import dev.dres.client.LogApi
 import dev.dres.client.SubmissionApi
 import dev.dres.client.UserApi
@@ -17,6 +18,9 @@ object Client {
 
         //initialize user api client
         val userApi = UserApi(Settings.basePath)
+
+        //initialize evaluation run info client
+        val runInfoApi = ClientRunInfoApi(Settings.basePath)
 
         //initialize submission api client
         val submissionApi = SubmissionApi(Settings.basePath)
@@ -52,6 +56,17 @@ object Client {
         val sessionId = login.sessionId!!
 
         Thread.sleep(1000)
+
+        val currentRuns = runInfoApi.getApiRuninfoList(sessionId)
+
+        println("Found ${currentRuns.runs.size} ongoing evaluation runs")
+        currentRuns.runs.forEach {
+            println("${it.name} (${it.id}): ${it.status}")
+            if (it.description != null){
+                println(it.description)
+            }
+            println()
+        }
 
         val submissionResponse =
                 try {

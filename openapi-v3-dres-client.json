@@ -333,6 +333,108 @@
         }
       }
     },
+    "/api/runInfo/list": {
+      "get": {
+        "tags": [
+          "Client Run Info"
+        ],
+        "summary": "Lists an overview of all competition runs visible to the current client",
+        "operationId": "getApiRuninfoList",
+        "parameters": [
+          {
+            "name": "session",
+            "in": "query",
+            "description": "Session Token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientRunInfoList"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorStatus"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/runInfo/currentTask/{runId}": {
+      "get": {
+        "tags": [
+          "Client Run Info"
+        ],
+        "summary": "Returns an overview of the currently active task for a run",
+        "operationId": "getApiRuninfoCurrenttaskWithRunid",
+        "parameters": [
+          {
+            "name": "runId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "session",
+            "in": "query",
+            "description": "Session Token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientTaskInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorStatus"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorStatus"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/submit": {
       "get": {
         "tags": [
@@ -698,6 +800,78 @@
           "timeStamp": {
             "type": "integer",
             "format": "int64"
+          }
+        }
+      },
+      "ClientRunInfo": {
+        "required": [
+          "id",
+          "name",
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "CREATED",
+              "ACTIVE",
+              "PREPARING_TASK",
+              "RUNNING_TASK",
+              "TASK_ENDED",
+              "TERMINATED"
+            ]
+          }
+        }
+      },
+      "ClientRunInfoList": {
+        "required": [
+          "runs"
+        ],
+        "type": "object",
+        "properties": {
+          "runs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ClientRunInfo"
+            }
+          }
+        }
+      },
+      "ClientTaskInfo": {
+        "required": [
+          "id",
+          "name",
+          "remainingTime",
+          "running",
+          "taskGroup"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "taskGroup": {
+            "type": "string"
+          },
+          "remainingTime": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "running": {
+            "type": "boolean"
           }
         }
       },
