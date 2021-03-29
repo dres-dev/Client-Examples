@@ -1,0 +1,25 @@
+plugins {
+    id 'org.openapi.generator' version '5.0.0'
+}
+
+group 'dev.dres.example.angular'
+version '0.1'
+
+
+openApiGenerate {
+  generateApiTests = false
+  generateModelTests = false
+  validateSpec = false
+
+
+    generatorName = "typescript-angular"
+    inputSpec = "$rootDir/../oas-client.json".toString()
+    outputDir = "$rootDir/openapi".toString()
+    apiPackage = "dev.dres.client"
+
+  configOptions = [
+    npmName: '@dres-client-openapi/api',
+    ngVersion: '11.2.7',
+    enumPropertyNaming: 'original'
+  ]
+}

@@ -8,6 +8,7 @@ Currently, there are examples in these langauges:
 * [Java](java/README.md)
 * [Kotlin](kotlin/README.md)
 * [c#](csharp/README.md)
+* [typescript/ angular](angular-ts/README.md)
 
 ## Prerequisites
 
