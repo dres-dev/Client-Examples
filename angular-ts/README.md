@@ -1,10 +1,16 @@
 # DRES Example Client: Angular / TypeScript
 
+Back to the [DRES Example Clients](../README.md)
+
+In this project, there is example code on how to use the DRES Client library for angular/ typescript.
+
+The main example code is in the [app.component.ts](src/app/app.component.ts) file.
+
 ## Setup
 
 Please run
 ```
-./gradlew openapiGenerate
+./gradlew openApiGenerate
 ```
 
 to get the client side bindings.

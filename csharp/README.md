@@ -1,5 +1,11 @@
 # DRES Example Client: C#
 
+Back to the [DRES Example Clients](../README.md)
+
+In this project, there is example code on how to use the DRES Client library for c#.
+
+The main example code is in the [Client.cs](src/Client.cs) file.
+
 ## Setup
 
 Please run
