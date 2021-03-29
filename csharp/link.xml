@@ -1,0 +1,24 @@
+<linker>
+  <!-- Json.NET compatibility -->
+  <!--
+  These here are required for Json.NET and the cineast API to work in IL2CPP
+  because IL2CPP strips certain code which causes json serialization to fail.
+  The "netstandard2.0" version of Newtonsoft.Json must be used!
+  -->
+  <assembly fullname="RestSharp">
+    <type fullname="*" preserve="all" />
+  </assembly>
+  <assembly fullname="Newtonsoft.Json">
+    <type fullname="*" preserve="all" />
+  </assembly>
+  <assembly fullname="JsonSubTypes">
+    <type fullname="*" preserve="all" />
+  </assembly>
+  <assembly fullname="Dev.Dres.Client">
+    <type fullname="*" preserve="all" />
+  </assembly>
+  <assembly fullname="System.Core">
+    <type fullname="System.Linq.Expressions.Interpreter.LightLambda" preserve="all" />
+  </assembly>
+  <!-- Json.NET compatibility -->
+</linker>

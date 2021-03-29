@@ -1,0 +1,34 @@
+import org.apache.tools.ant.taskdefs.condition.Os
+
+plugins {
+    id 'org.openapi.generator' version '5.0.0'
+}
+
+group 'dev.dres.example.csharp'
+version '0.1'
+
+
+openApiGenerate {
+    generatorName = "csharp"
+    inputSpec = "$rootDir/../oas-client.json".toString()
+    outputDir = "$rootDir/Generated".toString()
+    packageName = "Dev.Dres.Client"
+}
+
+/* Build the openapi dll */
+task buildOpenApi(type: Exec){
+    dependsOn tasks.openApiGenerate
+    workingDir "$rootDir/Generated"
+    if( Os.isFamily(Os.FAMILY_WINDOWS)){
+        /* only windows */
+        commandLine = "$rootDir/Generated/build.bat"
+    }else{
+        /* Should work with .sh */
+        dependsOn "modex"
+        commandLine = "$rootDir/Generated/build.sh"
+    }
+}
+
+task clean(type: Delete){
+    delete "$rootDir/Generated"
+}
