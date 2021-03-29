@@ -27,7 +27,7 @@ sourceSets {
 
 openApiGenerate {
     generatorName = "kotlin"
-    inputSpec = "$rootDir/openapi-v3-dres-client.json".toString()
+    inputSpec = "$rootDir/../oas-client.json".toString()
     outputDir = "$buildDir/generated".toString()
     apiPackage = "dev.dres.client"
 }
