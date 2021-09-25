@@ -39,7 +39,7 @@ namespace csharp
       UserDetails login = null;
       try
       {
-        login = userApi.PostApiLogin(new LoginRequest(Settings.User, Settings.Pass));
+        login = userApi.PostApiV1Login(new LoginRequest(Settings.User, Settings.Pass));
       }
       catch(ApiException ex)
       {
@@ -61,7 +61,7 @@ namespace csharp
       // === Example 1: Evaluation Runs Info ===
       
       // Retrieve current evaluation runs
-      var currentRuns = runInfoApi.GetApiRuninfoList(sessionid);
+      var currentRuns = runInfoApi.GetApiV1RuninfoList(sessionid);
       Println($"Found {currentRuns.Runs.Count} ongoing evaluation runs");
       currentRuns.Runs.ForEach(info =>
       {
@@ -79,7 +79,7 @@ namespace csharp
       SuccessfulSubmissionsStatus submissionResponse = null;
       try
       {
-        submissionResponse = submissionApi.GetSubmit(
+        submissionResponse = submissionApi.GetApiV1Submit(
           session: sessionid,
           collection: null, //does not usually need to be set
           item: "some_item_name",//item which is to be submitted
@@ -110,7 +110,7 @@ namespace csharp
         Println("The submission was successfully sent to the server.");
         
         // === Example 3: Log ===
-        logApi.PostLogResult(
+        logApi.PostApiV1LogResult(
           session: sessionid,
           new QueryResultLog(DateTimeOffset.Now.ToUnixTimeMilliseconds(),
             sortType: "list",
@@ -123,7 +123,7 @@ namespace csharp
       // === Graceful logout ===
       Thread.Sleep(1000);
 
-      var logout = userApi.GetApiLogout(sessionid);
+      var logout = userApi.GetApiV1Logout(sessionid);
 
       if (logout.Status)
       {

@@ -35,7 +35,7 @@ class Client {
         //login request
         UserDetails login = null;
         try {
-            login = userApi.postApiLogin(new LoginRequest().username(Settings.USER).password(Settings.PASS));
+            login = userApi.postApiV1Login(new LoginRequest().username(Settings.USER).password(Settings.PASS));
         } catch (ApiException e) {
 
             if (e.getCause() instanceof ConnectException) {
@@ -61,7 +61,7 @@ class Client {
 
         ClientRunInfoList currentRuns = null;
         try {
-            currentRuns = runInfoApi.getApiRuninfoList(sessionId);
+            currentRuns = runInfoApi.getApiV1RuninfoList(sessionId);
         } catch (ApiException e) {
             System.err.println("Error during request: '" + e.getMessage() + "', exiting");
             return;
@@ -79,7 +79,7 @@ class Client {
 
         SuccessfulSubmissionsStatus submissionResponse = null;
         try {
-            submissionResponse = submissionApi.getSubmit(
+            submissionResponse = submissionApi.getApiV1Submit(
                     null, //does not usually need to be set
                     "some_item_name", //item which is to be submitted
                     null, // for items with temporal components, such as video
@@ -107,7 +107,7 @@ class Client {
             System.out.println("The submission was successfully sent to the server.");
 
             try {
-                logApi.postLogResult(
+                logApi.postApiV1LogResult(
                         sessionId,
                         new QueryResultLog()
                                 .timestamp(System.currentTimeMillis())
@@ -136,7 +136,7 @@ class Client {
         SuccessStatus logout = null;
 
         try {
-            logout = userApi.getApiLogout(sessionId);
+            logout = userApi.getApiV1Logout(sessionId);
         } catch (ApiException e) {
             System.err.println("Error during request: '" + e.getMessage() + "'");
         }
