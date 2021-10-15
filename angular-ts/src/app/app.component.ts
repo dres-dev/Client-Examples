@@ -38,7 +38,7 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
 
     // === Handshake / Login ===
-    this.userService.postApiLogin({
+    this.userService.postApiV1Login({
       username: Settings.user,
       password: Settings.pass
     } as LoginRequest)
@@ -60,7 +60,7 @@ export class AppComponent implements OnInit {
       // Wait for a second (do other things)
       setTimeout(() => {
         // === Example 1: Evaluation Run Info ===
-        this.runInfoService.getApiRuninfoList(sessionId).subscribe((currentRuns: ClientRunInfoList) => {
+        this.runInfoService.getApiV1RuninfoList(sessionId).subscribe((currentRuns: ClientRunInfoList) => {
           this.println(`Found ${currentRuns.runs.length} ongoing evaluation runs`);
           currentRuns.runs.forEach((run: ClientRunInfo) => {
             this.println(`${run.name} (${run.id}): ${run.status}`);
@@ -72,7 +72,7 @@ export class AppComponent implements OnInit {
         });
 
         // === Example 2: Submission ===
-        this.submissionService.getSubmit(
+        this.submissionService.getApiV1Submit(
           null, // collection - does not usually need to be set
           'some_item_name', // item -  item which is to be submitted
           null, // frame - for items with temporal components, such as video
@@ -86,7 +86,7 @@ export class AppComponent implements OnInit {
             this.println('The submission was sccuessfully sent to the server.');
 
             // === Example 3: Log ===
-            this.logService.postLogResult(sessionId, {
+            this.logService.postApiV1LogResult(sessionId, {
               timestamp: Date.now(),
               sortType: 'list',
               results: [
@@ -103,7 +103,7 @@ export class AppComponent implements OnInit {
             // Some more stuff happens, we'll just sleep
             setTimeout(() => {
               // === Example 5: Gracefuly logout ===
-              this.userService.getApiLogout(sessionId).subscribe((logout: SuccessStatus) => {
+              this.userService.getApiV1Logout(sessionId).subscribe((logout: SuccessStatus) => {
                 if (logout.status) {
                   this.println('Successfully logged out');
                 } else {

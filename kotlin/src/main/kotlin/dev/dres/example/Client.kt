@@ -32,7 +32,7 @@ object Client {
 
         //login request
         val login = try {
-            userApi.postApiLogin(
+            userApi.postApiV1Login(
                 LoginRequest(
                     Settings.user, Settings.pass
                 )
@@ -57,7 +57,7 @@ object Client {
 
         Thread.sleep(1000)
 
-        val currentRuns = runInfoApi.getApiRuninfoList(sessionId)
+        val currentRuns = runInfoApi.getApiV1RuninfoList(sessionId)
 
         println("Found ${currentRuns.runs.size} ongoing evaluation runs")
         currentRuns.runs.forEach {
@@ -70,7 +70,7 @@ object Client {
 
         val submissionResponse =
                 try {
-                    submissionApi.getSubmit(
+                    submissionApi.getApiV1Submit(
                             session = sessionId,
                             collection = null, //does not usually need to be set
                             item = "some_item_name", //item which is to be submitted
@@ -90,7 +90,7 @@ object Client {
         if (submissionResponse != null && submissionResponse.status) {
             println("The submission was successfully sent to the server.")
 
-            logApi.postLogResult(session = sessionId,
+            logApi.postApiV1LogResult(session = sessionId,
                     QueryResultLog(System.currentTimeMillis(),
                         sortType = "list",
                         results = listOf(
@@ -109,7 +109,7 @@ object Client {
 
 
         //log out
-        val logout = userApi.getApiLogout(sessionId)
+        val logout = userApi.getApiV1Logout(sessionId)
 
         if (logout.status) {
             println("Successfully logged out")
