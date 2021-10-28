@@ -19,6 +19,13 @@ and thus, on [Gradle](https://gradle.org) - however, as we use the gradle wrappe
 
 Besides that, the examples are in various languages with their own set of prerequisites.
 
+## Usage / Purpose
+
+These examples showcase how to use the [OpenAPI Generator](https://github.com/OpenAPITools/openapi-generator) in combination with the official [DRES Client OpenApi Specifications](https://raw.githubusercontent.com/dres-dev/DRES/master/doc/oas-client.json) in order to generate client code in some languages.
+The generated code does all the communication with DRES, only linking said generated code to application logic is left to the user.
+
+In these examples, we show how to use get the generated code and how to use it. In a similar fashion the code generation as well as its usage can be applied to existing projects.
+
 ## Citation
 
 We kindly ask you to refer to the following paper in publications mentioning or employing DRES:
