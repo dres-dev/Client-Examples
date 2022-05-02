@@ -61,7 +61,7 @@ namespace csharp
       // === Example 1: Evaluation Runs Info ===
       
       // Retrieve current evaluation runs
-      var currentRuns = runInfoApi.GetApiV1RuninfoList(sessionid);
+      var currentRuns = runInfoApi.GetApiV1ClientRunInfoList(sessionid);
       Println($"Found {currentRuns.Runs.Count} ongoing evaluation runs");
       currentRuns.Runs.ForEach(info =>
       {
@@ -85,7 +85,8 @@ namespace csharp
           item: "some_item_name",//item which is to be submitted
           frame: null,// for items with temporal components, such as video
           shot: null,// only one of the time fields needs to be set.
-          timecode: "00:00:10:00"//in this case, we use the timestamp in the form HH:MM:SS:FF
+          timecode: "00:00:10:00", //in this case, we use the timestamp in the form HH:MM:SS:FF
+          text: null //in case the task is not targeting a particular content object but plaintext
         );
 
       }

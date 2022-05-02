@@ -60,7 +60,7 @@ export class AppComponent implements OnInit {
       // Wait for a second (do other things)
       setTimeout(() => {
         // === Example 1: Evaluation Run Info ===
-        this.runInfoService.getApiV1RuninfoList(sessionId).subscribe((currentRuns: ClientRunInfoList) => {
+        this.runInfoService.getApiV1ClientRunInfoList(sessionId).subscribe((currentRuns: ClientRunInfoList) => {
           this.println(`Found ${currentRuns.runs.length} ongoing evaluation runs`);
           currentRuns.runs.forEach((run: ClientRunInfo) => {
             this.println(`${run.name} (${run.id}): ${run.status}`);
@@ -75,6 +75,7 @@ export class AppComponent implements OnInit {
         this.submissionService.getApiV1Submit(
           null, // collection - does not usually need to be set
           'some_item_name', // item -  item which is to be submitted
+          null, //text - in case the task is not targeting a particular content object but plaintext
           null, // frame - for items with temporal components, such as video
           null, // shot - only one of the time fields needs to be set.
           '00:00:10:00', // timecode - in this case, we use the timestamp in the form HH:MM:SS:FF

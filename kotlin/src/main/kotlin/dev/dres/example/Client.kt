@@ -57,7 +57,7 @@ object Client {
 
         Thread.sleep(1000)
 
-        val currentRuns = runInfoApi.getApiV1RuninfoList(sessionId)
+        val currentRuns = runInfoApi.getApiV1ClientRunInfoList(sessionId)
 
         println("Found ${currentRuns.runs.size} ongoing evaluation runs")
         currentRuns.runs.forEach {
@@ -76,7 +76,8 @@ object Client {
                             item = "some_item_name", //item which is to be submitted
                             frame = null, // for items with temporal components, such as video
                             shot = null,  // only one of the time fields needs to be set.
-                            timecode = "00:00:10:00" //in this case, we use the timestamp in the form HH:MM:SS:FF
+                            timecode = "00:00:10:00", //in this case, we use the timestamp in the form HH:MM:SS:FF
+                            text = null //in case the task is not targeting a particular content object but plaintext
                     )
                 } catch (clientException: ClientException) {
                     when (clientException.statusCode) {

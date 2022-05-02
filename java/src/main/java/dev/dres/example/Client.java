@@ -61,7 +61,7 @@ class Client {
 
         ClientRunInfoList currentRuns = null;
         try {
-            currentRuns = runInfoApi.getApiV1RuninfoList(sessionId);
+            currentRuns = runInfoApi.getApiV1ClientRunInfoList(sessionId);
         } catch (ApiException e) {
             System.err.println("Error during request: '" + e.getMessage() + "', exiting");
             return;
@@ -82,6 +82,7 @@ class Client {
             submissionResponse = submissionApi.getApiV1Submit(
                     null, //does not usually need to be set
                     "some_item_name", //item which is to be submitted
+                    null, //in case the task is not targeting a particular content object but plaintext
                     null, // for items with temporal components, such as video
                     null,  // only one of the time fields needs to be set.
                     "00:00:10:00", //in this case, we use the timestamp in the form HH:MM:SS:FF
@@ -141,7 +142,7 @@ class Client {
             System.err.println("Error during request: '" + e.getMessage() + "'");
         }
 
-        if (logout.getStatus()) {
+        if (logout != null && logout.getStatus()) {
             System.out.println("Successfully logged out");
         }
 
