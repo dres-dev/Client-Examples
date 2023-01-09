@@ -15,7 +15,6 @@ openApiGenerate {
     generatorName = "typescript-angular"
     inputSpec = "$rootDir/../oas-client.json".toString()
     outputDir = "$rootDir/openapi".toString()
-    apiPackage = "dev.dres.client"
 
   configOptions = [
     npmName: '@dres-client-openapi/api',

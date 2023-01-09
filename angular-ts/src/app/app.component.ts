@@ -1,17 +1,13 @@
 import {Component, OnInit} from '@angular/core';
-import {UserService} from '../../openapi/dev/dres/client/user.service';
-import {ClientRunInfoService} from '../../openapi/dev/dres/client/clientRunInfo.service';
-import {SubmissionService} from '../../openapi/dev/dres/client/submission.service';
-import {LogService} from '../../openapi/dev/dres/client/log.service';
 import {
   ClientRunInfo,
-  ClientRunInfoList,
-  LoginRequest,
+  ClientRunInfoList, ClientRunInfoService,
+  LoginRequest, LogService,
   QueryResult,
-  QueryResultLog,
+  QueryResultLog, SubmissionService,
   SuccessfulSubmissionsStatus,
   SuccessStatus,
-  UserDetails
+  UserDetails, UserService
 } from '../../openapi';
 import {Settings} from './settings.model';
 
@@ -74,7 +70,7 @@ export class AppComponent implements OnInit {
         // === Example 2: Submission ===
         this.submissionService.getApiV1Submit(
           null, // collection - does not usually need to be set
-          'some_item_name', // item -  item which is to be submitted
+          '00001', // item -  item which is to be submitted
           null, //text - in case the task is not targeting a particular content object but plaintext
           null, // frame - for items with temporal components, such as video
           null, // shot - only one of the time fields needs to be set.

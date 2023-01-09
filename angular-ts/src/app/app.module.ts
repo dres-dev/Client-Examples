@@ -4,6 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import {ApiModule, Configuration} from '../../openapi';
 import {Settings} from './settings.model';
+import {HttpClientModule} from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -11,6 +12,8 @@ import {Settings} from './settings.model';
   ],
   imports: [
     BrowserModule,
+    // import HttpClientModule after BrowserModule.
+    HttpClientModule,
     ApiModule.forRoot( () => {
       return new Configuration({
         basePath: Settings.basePath
