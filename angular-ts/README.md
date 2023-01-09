@@ -26,6 +26,30 @@ Obviously, this expects an NPM installation.
 Subsequently, use the [Dev Server](#Developement%20Server) instructions
 to get a dev server up and running.
 
+## Existing Angular Project
+
+_This section is for angular developers that want to use the client example lessons learned in their own project._
+
+If you already have an existing Angular project, it might be much easier to simply add the openapi generation to your `package.json`:
+
+```json
+{
+  "scripts": {
+    "gen-dres-client": "openapi-generator-cli generate -g typescript-angular -i https://raw.githubusercontent.com/dres-dev/DRES/master/doc/oas-client.json -o openapi/dres --skip-validate-spec --additional-properties npmName=@dres-client-openapi/api,ngVersion=13.0.0,enumPropertyNaming=original"
+  }
+}
+```
+
+Obviously, there are a lot of parameters you might want to adjust, the above statement is an example to add a script,
+to let the openapi generator via npm generate appropriate client bindings for the OpenApi DRES Specs on master branch (probably the latest release).
+
+The (dev-)dependency `"openapi-generator": "^0.1.39",` is required.
+
+In order to generate the bindings, run
+```
+npm run gen-dres-client
+```
+
 ---
 # Instructions for Angular:
 

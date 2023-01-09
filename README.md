@@ -26,6 +26,11 @@ The generated code does all the communication with DRES, only linking said gener
 
 In these examples, we show how to use get the generated code and how to use it. In a similar fashion the code generation as well as its usage can be applied to existing projects.
 
+## Issues
+
+If you do have troubles with the exmples shown here, please add an [issue](https://github.com/dres-dev/Client-Examples/issues).
+However, issues with the server have to be submitted to the [DRES issue page](https://github.com/dres-dev/DRES/issues).
+
 ## Citation
 
 We kindly ask you to refer to the following paper in publications mentioning or employing DRES:
