@@ -1,9 +1,9 @@
 plugins {
-    id 'org.openapi.generator' version '6.2.1'
+    id 'org.openapi.generator' version '7.0.1'
 }
 
 group 'dev.dres.example.angular'
-version '0.1'
+version '0.2'
 
 
 openApiGenerate {

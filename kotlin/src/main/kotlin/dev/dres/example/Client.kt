@@ -3,6 +3,7 @@ package dev.dres.example
 import dev.dres.client.*
 import org.openapitools.client.infrastructure.ClientException
 import org.openapitools.client.models.*
+import java.lang.RuntimeException
 import java.net.ConnectException
 
 object Client {
@@ -65,10 +66,11 @@ object Client {
             println()
         }
 
+        val evaluationId = currentEvaluations.find { it.status == ApiEvaluationStatus.aCTIVE }?.id ?: throw RuntimeException("No active evaluation")
 
         val successStatus = try{
             submissionApi.postApiV2SubmitByEvaluationId(
-                "evaluation id",
+                evaluationId,
                 ApiClientSubmission(
                     listOf(
                         ApiClientAnswerSet(
