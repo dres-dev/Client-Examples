@@ -2,7 +2,7 @@ package dev.dres.example;
 
 import dev.dres.ApiClient;
 import dev.dres.ApiException;
-import dev.dres.client.ClientRunInfoApi;
+import dev.dres.client.EvaluationClientApi;
 import dev.dres.client.LogApi;
 import dev.dres.client.SubmissionApi;
 import dev.dres.client.UserApi;
@@ -22,7 +22,7 @@ class Client {
         UserApi userApi = new UserApi(client);
 
         //initialize evaluation run info client
-        ClientRunInfoApi runInfoApi = new ClientRunInfoApi(client);
+        EvaluationClientApi runInfoApi = new EvaluationClientApi(client);
 
         //initialize submission api client
         SubmissionApi submissionApi = new SubmissionApi(client);
@@ -33,9 +33,9 @@ class Client {
         System.out.println("Trying to log in to '" + Settings.BASE_PATH + "' with user '" + Settings.USER + "'");
 
         //login request
-        UserDetails login = null;
+        ApiUser login = null;
         try {
-            login = userApi.postApiV1Login(new LoginRequest().username(Settings.USER).password(Settings.PASS));
+            login = userApi.postApiV2Login(new LoginRequest().username(Settings.USER).password(Settings.PASS));
         } catch (ApiException e) {
 
             if (e.getCause() instanceof ConnectException) {
@@ -59,20 +59,20 @@ class Client {
         } catch (InterruptedException ignored) {
         }
 
-        ClientRunInfoList currentRuns = null;
+        List<ApiEvaluationInfo> currentRuns;
         try {
-            currentRuns = runInfoApi.getApiV1ClientRunInfoList(sessionId);
+            currentRuns = runInfoApi.getApiV2ClientEvaluationList(sessionId);
         } catch (ApiException e) {
             System.err.println("Error during request: '" + e.getMessage() + "', exiting");
             return;
         }
 
-        System.out.println("Found " + currentRuns.getRuns().size() + " ongoing evaluation runs");
+        System.out.println("Found " + currentRuns.size() + " ongoing evaluation runs");
 
-        for (ClientRunInfo run : currentRuns.getRuns()) {
+        for (ApiEvaluationInfo run : currentRuns) {
             System.out.println(run.getName() + " (" + run.getId() + "): " + run.getStatus());
-            if (run.getDescription() != null) {
-                System.out.println(run.getDescription());
+            if (run.getTemplateDescription() != null) {
+                System.out.println(run.getTemplateDescription());
             }
             System.out.println();
         }
@@ -108,7 +108,7 @@ class Client {
             System.out.println("The submission was successfully sent to the server.");
 
             try {
-                logApi.postApiV1LogResult(
+                logApi.postApiV2LogResult(
                         sessionId,
                         new QueryResultLog()
                                 .timestamp(System.currentTimeMillis())
@@ -137,7 +137,7 @@ class Client {
         SuccessStatus logout = null;
 
         try {
-            logout = userApi.getApiV1Logout(sessionId);
+            logout = userApi.getApiV2Logout(sessionId);
         } catch (ApiException e) {
             System.err.println("Error during request: '" + e.getMessage() + "'");
         }
