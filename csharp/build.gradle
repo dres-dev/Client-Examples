@@ -1,11 +1,11 @@
 import org.apache.tools.ant.taskdefs.condition.Os
 
 plugins {
-    id 'org.openapi.generator' version '6.2.1'
+    id 'org.openapi.generator' version '7.0.1'
 }
 
 group 'dev.dres.example.csharp'
-version '0.1'
+version '0.2'
 
 
 openApiGenerate {

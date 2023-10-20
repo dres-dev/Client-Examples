@@ -1,14 +1,9 @@
 package dev.dres.example
 
-import dev.dres.client.ClientRunInfoApi
-import dev.dres.client.LogApi
-import dev.dres.client.SubmissionApi
-import dev.dres.client.UserApi
+import dev.dres.client.*
 import org.openapitools.client.infrastructure.ClientException
-import org.openapitools.client.models.LoginRequest
-import org.openapitools.client.models.QueryResult
-import org.openapitools.client.models.QueryResultLog
-import org.openapitools.client.models.SessionId
+import org.openapitools.client.models.*
+import java.lang.RuntimeException
 import java.net.ConnectException
 
 object Client {
@@ -20,7 +15,7 @@ object Client {
         val userApi = UserApi(Settings.basePath)
 
         //initialize evaluation run info client
-        val runInfoApi = ClientRunInfoApi(Settings.basePath)
+        val runInfoApi = EvaluationClientApi(Settings.basePath)
 
         //initialize submission api client
         val submissionApi = SubmissionApi(Settings.basePath)
@@ -32,7 +27,7 @@ object Client {
 
         //login request
         val login = try {
-            userApi.postApiV1Login(
+            userApi.postApiV2Login(
                 LoginRequest(
                     Settings.user, Settings.pass
                 )
@@ -45,64 +40,81 @@ object Client {
             return
         }
 
-        println("""
+        println(
+            """
             login successful
             user: '${login.username}'
-            role: '${login.role.value}'
+            role: '${login.role?.value}'
             session: ${login.sessionId}
-        """.trimIndent())
+        """.trimIndent()
+        )
 
         //store session token for future requests
         val sessionId = login.sessionId!!
 
+
         Thread.sleep(1000)
 
-        val currentRuns = runInfoApi.getApiV1ClientRunInfoList(sessionId)
+        val currentEvaluations = runInfoApi.getApiV2ClientEvaluationList(sessionId)
 
-        println("Found ${currentRuns.runs.size} ongoing evaluation runs")
-        currentRuns.runs.forEach {
+        println("Found ${currentEvaluations.size} ongoing evaluation runs")
+        currentEvaluations.forEach {
             println("${it.name} (${it.id}): ${it.status}")
-            if (it.description != null){
-                println(it.description)
+            if (it.templateDescription != null) {
+                println(it.templateDescription)
             }
             println()
         }
 
-        val submissionResponse =
-                try {
-                    submissionApi.getApiV1Submit(
-                            session = sessionId,
-                            collection = null, //does not usually need to be set
-                            item = "some_item_name", //item which is to be submitted
-                            frame = null, // for items with temporal components, such as video
-                            shot = null,  // only one of the time fields needs to be set.
-                            timecode = "00:00:10:00", //in this case, we use the timestamp in the form HH:MM:SS:FF
-                            text = null //in case the task is not targeting a particular content object but plaintext
-                    )
-                } catch (clientException: ClientException) {
-                    when (clientException.statusCode) {
-                        401 -> System.err.println("There was an authentication error during the submission. Check the session id.")
-                        404 -> System.err.println("There is currently no active task which would accept submissions.")
-                        else -> System.err.println("Something unexpected went wrong during the submission: '${clientException.message}'.")
-                    }
-                    null
-                }
+        val evaluationId = currentEvaluations.find { it.status == ApiEvaluationStatus.aCTIVE }?.id ?: throw RuntimeException("No active evaluation")
 
-        if (submissionResponse != null && submissionResponse.status) {
+        val successStatus = try{
+            submissionApi.postApiV2SubmitByEvaluationId(
+                evaluationId,
+                ApiClientSubmission(
+                    listOf(
+                        ApiClientAnswerSet(
+                            listOf(
+                                ApiClientAnswer(
+                                    text = null, //in case the task is not targeting a particular content object but plaintext
+                                    mediaItemName = "some_item_name", //item which is to be submitted
+                                    mediaItemCollectionName = null, //does not usually need to be set
+                                    start = 10_000, //start time in milliseconds
+                                    end = null //end time in milliseconds, in case an explicit time interval is to be specified
+                                )
+                            )
+                        )
+                    )
+                ),
+                sessionId
+            )
+        } catch (clientException: ClientException) {
+            when (clientException.statusCode) {
+                401 -> System.err.println("There was an authentication error during the submission. Check the session id.")
+                404 -> System.err.println("There is currently no active task which would accept submissions.")
+                412 -> System.err.println("The submission was rejected by the server: ${clientException.message}")
+                else -> System.err.println("Something unexpected went wrong during the submission: '${clientException.message}'.")
+            }
+            null
+        }
+
+        if (successStatus != null && successStatus.status) {
             println("The submission was successfully sent to the server.")
 
-            logApi.postApiV1LogResult(session = sessionId,
-                    QueryResultLog(System.currentTimeMillis(),
-                        sortType = "list",
-                        results = listOf(
-                            QueryResult("some_item_name", segment = 3, score = 0.9, rank = 1),
-                            QueryResult("some_item_name", segment = 5, score = 0.85, rank = 2),
-                            QueryResult("some_other_item_name", segment = 12, score = 0.76, rank = 3)
-                        ),
-                        events = listOf(),
-                        resultSetAvailability = ""
-                        )
+            logApi.postApiV2LogResult(
+                session = sessionId,
+                QueryResultLog(
+                    System.currentTimeMillis(),
+                    sortType = "list",
+                    results = listOf(
+                        QueryResult("some_item_name", segment = 3, score = 0.9, rank = 1),
+                        QueryResult("some_item_name", segment = 5, score = 0.85, rank = 2),
+                        QueryResult("some_other_item_name", segment = 12, score = 0.76, rank = 3)
+                    ),
+                    events = listOf(),
+                    resultSetAvailability = ""
                 )
+            )
 
         }
 
@@ -110,7 +122,7 @@ object Client {
 
 
         //log out
-        val logout = userApi.getApiV1Logout(sessionId)
+        val logout = userApi.getApiV2Logout(sessionId)
 
         if (logout.status) {
             println("Successfully logged out")

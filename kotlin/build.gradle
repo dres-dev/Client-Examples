@@ -1,20 +1,30 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-stdlib:1.8.22"
+    }
+}
+
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.4.21'
-    id 'org.openapi.generator' version '6.2.1'
+    id 'org.jetbrains.kotlin.jvm' version '1.8.22'
+    id 'org.openapi.generator' version '7.0.1'
 }
 
 group 'dev.dres.example.kotlin'
-version '0.1'
+version '0.2'
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib"
-    api "com.squareup.moshi:moshi-kotlin:1.9.2"
-    api "com.squareup.moshi:moshi-adapters:1.9.2"
-    api "com.squareup.okhttp3:okhttp:4.2.2"
+    implementation group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib', version: '1.8.22'
+    implementation "org.jetbrains.kotlin:kotlin-reflect:1.8.22"
+    implementation "com.squareup.moshi:moshi-kotlin:1.14.0"
+    implementation "com.squareup.moshi:moshi-adapters:1.14.0"
+    implementation "com.squareup.okhttp3:okhttp:4.11.0"
 }
 
 sourceSets {
@@ -27,6 +37,7 @@ sourceSets {
 
 openApiGenerate {
     generatorName = "kotlin"
+    library = "jvm-okhttp4"
     inputSpec = "$rootDir/../oas-client.json".toString()
     outputDir = "$buildDir/generated".toString()
     apiPackage = "dev.dres.client"

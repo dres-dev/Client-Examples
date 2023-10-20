@@ -1,13 +1,17 @@
+import { EvaluationClientService } from './../../openapi/api/evaluationClient.service';
 import {Component, OnInit} from '@angular/core';
 import {
-  ClientRunInfo,
-  ClientRunInfoList, ClientRunInfoService,
+  ApiClientAnswer,
+  ApiClientAnswerSet,
+  ApiClientSubmission,
+  ApiEvaluationInfo,
+  ApiEvaluationStatus,
+  ApiUser,
   LoginRequest, LogService,
   QueryResult,
   QueryResultLog, SubmissionService,
   SuccessfulSubmissionsStatus,
-  SuccessStatus,
-  UserDetails, UserService
+  SuccessStatus, UserService
 } from '../../openapi';
 import {Settings} from './settings.model';
 
@@ -25,7 +29,7 @@ export class AppComponent implements OnInit {
   // See app.module.ts import declaration of @NgModule annotation
   constructor(
     private userService: UserService,
-    private runInfoService: ClientRunInfoService,
+    private evaluationClientService: EvaluationClientService,
     private submissionService: SubmissionService,
     private logService: LogService
   ) {
@@ -34,11 +38,11 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
 
     // === Handshake / Login ===
-    this.userService.postApiV1Login({
+    this.userService.postApiV2Login({
       username: Settings.user,
       password: Settings.pass
     } as LoginRequest)
-    .subscribe((login: UserDetails) => {
+    .subscribe((login: ApiUser) => {
       this.println('Login successful\n' +
         `user: ${login.username}\n` +
         `role: ${login.role}` +
@@ -53,37 +57,45 @@ export class AppComponent implements OnInit {
        */
       const sessionId = login.sessionId;
 
+      let evalutationId = "";
+
       // Wait for a second (do other things)
       setTimeout(() => {
         // === Example 1: Evaluation Run Info ===
-        this.runInfoService.getApiV1ClientRunInfoList(sessionId).subscribe((currentRuns: ClientRunInfoList) => {
-          this.println(`Found ${currentRuns.runs.length} ongoing evaluation runs`);
-          currentRuns.runs.forEach((run: ClientRunInfo) => {
-            this.println(`${run.name} (${run.id}): ${run.status}`);
-            if (run.description) {
-              this.println(run.description);
+        this.evaluationClientService.getApiV2ClientEvaluationList (sessionId).subscribe((evaluations: ApiEvaluationInfo[]) => {
+          this.println(`Found ${evaluations.length} ongoing evaluation runs`);
+          evaluations.forEach((evaluation: ApiEvaluationInfo) => {
+            this.println(`${evaluation.name} (${evaluation.id}): ${evaluation.status}`);
+            if (evaluation.templateDescription) {
+              this.println(evaluation.templateDescription);
               this.println('');
+            }
+            if(evaluation.status == ApiEvaluationStatus.ACTIVE) {
+              evalutationId = evaluation.id;
             }
           });
         });
 
-        // === Example 2: Submission ===
-        this.submissionService.getApiV1Submit(
-          null, // collection - does not usually need to be set
-          '00001', // item -  item which is to be submitted
-          null, //text - in case the task is not targeting a particular content object but plaintext
-          null, // frame - for items with temporal components, such as video
-          null, // shot - only one of the time fields needs to be set.
-          '00:00:10:00', // timecode - in this case, we use the timestamp in the form HH:MM:SS:FF
-          sessionId // the sessionId, as always
-        ).subscribe((submissionResponse: SuccessfulSubmissionsStatus) => {
+        this.submissionService.postApiV2SubmitByEvaluationId(evalutationId, {answerSets: [
+          {answers: [
+            {
+              text: null, //text - in case the task is not targeting a particular content object but plaintext
+              mediaItemName: '00001', // item -  item which is to be submitted
+              mediaItemCollectionName: null, // collection - does not usually need to be set
+              start: 10_000, //start time in milliseconds
+              end: null //end time in milliseconds, in case an explicit time interval is to be specified
+            } as ApiClientAnswer
+          ]} as ApiClientAnswerSet
+        ]} as ApiClientSubmission,
+        
+        sessionId).subscribe((submissionResponse: SuccessfulSubmissionsStatus) => {
           // Check if submission as successful
 
           if (submissionResponse && submissionResponse?.status) {
             this.println('The submission was sccuessfully sent to the server.');
 
             // === Example 3: Log ===
-            this.logService.postApiV1LogResult(sessionId, {
+            this.logService.postApiV2LogResult(sessionId, {
               timestamp: Date.now(),
               sortType: 'list',
               results: [
@@ -100,7 +112,7 @@ export class AppComponent implements OnInit {
             // Some more stuff happens, we'll just sleep
             setTimeout(() => {
               // === Example 5: Gracefuly logout ===
-              this.userService.getApiV1Logout(sessionId).subscribe((logout: SuccessStatus) => {
+              this.userService.getApiV2Logout(sessionId).subscribe((logout: SuccessStatus) => {
                 if (logout.status) {
                   this.println('Successfully logged out');
                 } else {
