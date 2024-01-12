@@ -59,7 +59,7 @@ class Client {
     } catch (InterruptedException ignored) {
     }
 
-    List<ApiEvaluationInfo> currentRuns;
+    List<ApiClientEvaluationInfo> currentRuns;
     try {
       currentRuns = runInfoApi.getApiV2ClientEvaluationList(sessionId);
     } catch (ApiException e) {
@@ -69,7 +69,7 @@ class Client {
 
     System.out.println("Found " + currentRuns.size() + " ongoing evaluation runs");
 
-    for (ApiEvaluationInfo run : currentRuns) {
+    for (ApiClientEvaluationInfo run : currentRuns) {
       System.out.println(run.getName() + " (" + run.getId() + "): " + run.getStatus());
       if (run.getTemplateDescription() != null) {
         System.out.println(run.getTemplateDescription());
@@ -85,7 +85,7 @@ class Client {
           new ApiClientSubmission().addAnswerSetsItem(
               new ApiClientAnswerSet().addAnswersItem(
                   new ApiClientAnswer()
-                      .mediaItemId("some_item_name") //item which is to be submitted
+                      .mediaItemName("some_item_name")
                       .start(10_000L) //start time in milliseconds
               )
           ), sessionId);
