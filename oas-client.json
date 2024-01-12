@@ -2,8 +2,8 @@
   "openapi" : "3.0.3",
   "info" : {
     "title" : "DRES Client API",
-    "description" : "Client API for DRES (Distributed Retrieval Evaluation Server), Version 2.0.0",
-    "version" : "2.0.0"
+    "description" : "Client API for DRES (Distributed Retrieval Evaluation Server), Version 2.0.0-RC3",
+    "version" : "2.0.0-RC3"
   },
   "paths" : {
     "/api/v1/submit" : {
@@ -237,7 +237,7 @@
                 "schema" : {
                   "type" : "array",
                   "items" : {
-                    "$ref" : "#/components/schemas/ApiEvaluationInfo"
+                    "$ref" : "#/components/schemas/ApiClientEvaluationInfo"
                   }
                 }
               }
@@ -1228,6 +1228,100 @@
         "type" : "string",
         "enum" : [ "FRAME_NUMBER", "SECONDS", "MILLISECONDS", "TIMECODE" ]
       },
+      "ApiClientEvaluationInfo" : {
+        "type" : "object",
+        "additionalProperties" : false,
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "type" : {
+            "$ref" : "#/components/schemas/ApiEvaluationType"
+          },
+          "status" : {
+            "$ref" : "#/components/schemas/ApiEvaluationStatus"
+          },
+          "templateId" : {
+            "type" : "string"
+          },
+          "templateDescription" : {
+            "type" : "string"
+          },
+          "teams" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "taskTemplates" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ApiClientTaskTemplateInfo"
+            }
+          }
+        },
+        "required" : [ "id", "name", "type", "status", "templateId", "teams", "taskTemplates" ]
+      },
+      "ApiClientTaskTemplateInfo" : {
+        "type" : "object",
+        "additionalProperties" : false,
+        "properties" : {
+          "name" : {
+            "type" : "string"
+          },
+          "taskGroup" : {
+            "type" : "string"
+          },
+          "taskType" : {
+            "type" : "string"
+          },
+          "duration" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        },
+        "required" : [ "name", "taskGroup", "taskType", "duration" ]
+      },
+      "ApiEvaluation" : {
+        "type" : "object",
+        "additionalProperties" : false,
+        "properties" : {
+          "evaluationId" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "type" : {
+            "$ref" : "#/components/schemas/ApiEvaluationType"
+          },
+          "template" : {
+            "$ref" : "#/components/schemas/ApiEvaluationTemplate"
+          },
+          "created" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "started" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "ended" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "tasks" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ApiTask"
+            }
+          }
+        },
+        "required" : [ "evaluationId", "name", "type", "template", "created", "tasks" ]
+      },
       "ApiEvaluationInfo" : {
         "type" : "object",
         "additionalProperties" : false,
@@ -1351,6 +1445,33 @@
         },
         "required" : [ "evaluationId", "taskId", "submissions" ]
       },
+      "ApiTask" : {
+        "type" : "object",
+        "additionalProperties" : false,
+        "properties" : {
+          "taskId" : {
+            "type" : "string"
+          },
+          "templateId" : {
+            "type" : "string"
+          },
+          "started" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "ended" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "submissions" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ApiAnswerSet"
+            }
+          }
+        },
+        "required" : [ "taskId", "templateId", "submissions" ]
+      },
       "ApiTaskOverview" : {
         "type" : "object",
         "additionalProperties" : false,
@@ -1400,6 +1521,9 @@
             "type" : "string"
           },
           "name" : {
+            "type" : "string"
+          },
+          "comment" : {
             "type" : "string"
           },
           "taskGroup" : {
@@ -1605,9 +1729,6 @@
         "additionalProperties" : false,
         "properties" : {
           "text" : {
-            "type" : "string"
-          },
-          "mediaItemId" : {
             "type" : "string"
           },
           "mediaItemName" : {
@@ -2021,6 +2142,9 @@
           "mediaItem" : {
             "type" : "string"
           },
+          "mediaItemName" : {
+            "type" : "string"
+          },
           "range" : {
             "$ref" : "#/components/schemas/ApiTemporalRange"
           }
@@ -2062,6 +2186,9 @@
           },
           "range" : {
             "$ref" : "#/components/schemas/ApiTemporalRange"
+          },
+          "name" : {
+            "type" : "string"
           }
         },
         "required" : [ "type" ]
@@ -2090,6 +2217,9 @@
         "type" : "object",
         "additionalProperties" : false,
         "properties" : {
+          "id" : {
+            "type" : "string"
+          },
           "name" : {
             "type" : "string"
           },
@@ -2138,7 +2268,7 @@
             "type" : "string"
           }
         },
-        "required" : [ "name", "taskGroup", "taskType", "duration", "collectionId", "targets", "hints", "comment" ]
+        "required" : [ "name", "taskGroup", "taskType", "duration", "collectionId", "targets", "hints" ]
       },
       "ApiTaskType" : {
         "type" : "object",
