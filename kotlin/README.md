@@ -14,3 +14,7 @@ Please run
 ```
 
 to get the client side bindings.
+
+**NOTE AS OF OCTOBER 2023 THERE IS A BUG IN THE OPENAPI GENERATOR AND SOME GENERATED CODE REQUIRES A FIX**
+
+Due to https://github.com/OpenAPITools/openapi-generator/issues/16714 , the file `ApiClient.kt` which has been generated has to be replaced with the [a fixed version](https://gist.github.com/sauterl/25e7ce2a68d943422a4307a26c05d02f).
