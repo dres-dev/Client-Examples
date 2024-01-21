@@ -3,13 +3,13 @@ import {Component, OnInit} from '@angular/core';
 import {
   ApiClientAnswer,
   ApiClientAnswerSet,
+  ApiClientEvaluationInfo,
   ApiClientSubmission,
   ApiEvaluationInfo,
   ApiEvaluationStatus,
   ApiUser,
   LoginRequest, LogService,
-  QueryResult,
-  QueryResultLog, SubmissionService,
+  QueryResultLog, RankedAnswer, SubmissionService,
   SuccessfulSubmissionsStatus,
   SuccessStatus, UserService
 } from '../../openapi';
@@ -62,9 +62,9 @@ export class AppComponent implements OnInit {
       // Wait for a second (do other things)
       setTimeout(() => {
         // === Example 1: Evaluation Run Info ===
-        this.evaluationClientService.getApiV2ClientEvaluationList (sessionId).subscribe((evaluations: ApiEvaluationInfo[]) => {
+        this.evaluationClientService.getApiV2ClientEvaluationList (sessionId).subscribe((evaluations: ApiClientEvaluationInfo[]) => {
           this.println(`Found ${evaluations.length} ongoing evaluation runs`);
-          evaluations.forEach((evaluation: ApiEvaluationInfo) => {
+          evaluations.forEach((evaluation: ApiClientEvaluationInfo) => {
             this.println(`${evaluation.name} (${evaluation.id}): ${evaluation.status}`);
             if (evaluation.templateDescription) {
               this.println(evaluation.templateDescription);
@@ -95,13 +95,13 @@ export class AppComponent implements OnInit {
             this.println('The submission was sccuessfully sent to the server.');
 
             // === Example 3: Log ===
-            this.logService.postApiV2LogResult(sessionId, {
+            this.logService.postApiV2LogResultByEvaluationId(evalutationId, sessionId, {
               timestamp: Date.now(),
               sortType: 'list',
               results: [
-                {item: 'some_item_name', segment: 3, score: 0.9, rank: 1} as QueryResult,
-                {item: 'some_item_name', segment: 5, score: 0.85, rank: 2} as QueryResult,
-                {item: 'some_other_item_name', segment: 12, score: 0.76, rank: 3} as QueryResult
+                {rank: 1, answer: {mediaItemName: "some_item_name", start: 1000, end: 1000} as ApiClientAnswer} as RankedAnswer,
+                {rank: 2, answer: {mediaItemName: "some_item_name", start: 5000, end: 15000} as ApiClientAnswer} as RankedAnswer,
+                {rank: 3, answer: {mediaItemName: "some_other_item_name", start: 12000, end: 12000} as ApiClientAnswer} as RankedAnswer
               ],
               events: [],
               resultSetAvailability: ''
