@@ -101,15 +101,22 @@ object Client {
         if (successStatus != null && successStatus.status) {
             println("The submission was successfully sent to the server.")
 
-            logApi.postApiV2LogResult(
+            logApi.postApiV2LogResultByEvaluationId(
+                evaluationId,
                 session = sessionId,
                 QueryResultLog(
                     System.currentTimeMillis(),
                     sortType = "list",
                     results = listOf(
-                        QueryResult("some_item_name", segment = 3, score = 0.9, rank = 1),
-                        QueryResult("some_item_name", segment = 5, score = 0.85, rank = 2),
-                        QueryResult("some_other_item_name", segment = 12, score = 0.76, rank = 3)
+                        RankedAnswer(
+                            ApiClientAnswer(mediaItemName = "some_item_name", start = 1000, end = 1000), 1
+                        ),
+                        RankedAnswer(
+                            ApiClientAnswer(mediaItemName = "some_item_name", start = 5000, end = 5000), 2
+                        ),
+                        RankedAnswer(
+                            ApiClientAnswer(mediaItemName = "some_other_item_name", start = 12000, end = 12000), 3
+                        ),
                     ),
                     events = listOf(),
                     resultSetAvailability = ""
